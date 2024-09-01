@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Check code formatting with Rufo
+        run: bundle exec rufo --check .
+
+      - name: Test DSL compiler
+        run: |
+          rm -rf sorbet/rbi/dsl
+          ./bin/tapioca dsl
+          if ! git diff --exit-code; then
+            echo "The DSL RBIs for RSpec tests are out of date. Please re-run './bin/tapioca dsl'"
+            exit 1
+          fi
+
+      - name: Typecheck with Sorbet
+        run: bundle exec srb tc
+
+      - name: Run RSpec tests
+        run: bundle exec rspec
+
+      - name: Build gem
+        run: gem build sorbet-rspec.gemspec
+
+      - name: Upload gem artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gem
+          path: '*.gem'
+
+  release:
+    runs-on: ubuntu-24.04
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/')
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Verify version number
+        id: get_version
+        run: |
+          VERSION_STRING=$(ruby -r ./lib/debendencies/version.rb -e "puts Debendencies::VERSION_STRING")
+          if ! [[ "$GITHUB_REF_NAME" =~ ^v ]]; then
+            echo "Tag name must start with a 'v'."
+            exit 1
+          fi
+          if [[ "$GITHUB_REF_NAME" != "v${VERSION_STRING}" ]]; then
+            echo "Tag version ($GITHUB_REF_NAME) does not match version.rb ($VERSION_STRING)"
+            exit 1
+          fi
+
+      - name: Download gem artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: gem
+
+      - name: Push gem to RubyGems
+        run: gem push *.gem
+        env:
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+
+      - name: Create GitHub release
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-from-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
