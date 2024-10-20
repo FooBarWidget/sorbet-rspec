@@ -26,6 +26,9 @@ class RSpec::ExampleGroups::Car::SubContext < RSpec::ExampleGroups::Car
     sig { params(name: T.untyped, block: T.proc.bind(RSpec::ExampleGroups::Car::SubContext).void).returns(T.untyped) }
     def let(*name, &block); end
 
+    sig { params(name: T.untyped, block: T.proc.bind(RSpec::ExampleGroups::Car::SubContext).void).returns(T.untyped) }
+    def let!(*name, &block); end
+
     sig do
       params(
         all_args: T.untyped,
@@ -33,6 +36,9 @@ class RSpec::ExampleGroups::Car::SubContext < RSpec::ExampleGroups::Car
       ).returns(T.untyped)
     end
     def specify(*all_args, &block); end
+
+    sig { params(block: T.proc.bind(RSpec::ExampleGroups::Car::SubContext).void).returns(T.untyped) }
+    def subject(&block); end
   end
 end
 

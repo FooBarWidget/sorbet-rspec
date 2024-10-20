@@ -98,8 +98,7 @@ RSpec.describe "bar" do
 end
 ```
 
-> [!TIP]
-> **What's the class name to bind to?**
+> [!TIP] > **What's the class name to bind to?**
 >
 > RSpec generates a new class for every `describe`/`context` block. It follows the pattern "RSpec::ExampleGroups::[example group slug]". The easiest way to find out the name is to put a `puts self` in the block and check what it prints.
 
@@ -166,9 +165,10 @@ Luckily, there is a workaround. Create a file _somewhere_ in your project, conta
 require "sorbet-runtime"
 
 # Workaround for https://github.com/sorbet/sorbet/issues/8143
-if false
+if false # rubocop:disable Lint/LiteralAsCondition
   T::Sig::WithoutRuntime.sig { params(block: T.proc.bind(T::Private::Methods::DeclBuilder).void).void }
-  def sig(&block); end
+  def sig(&block)
+  end
 end
 ```
 

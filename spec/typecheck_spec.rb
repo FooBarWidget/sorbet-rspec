@@ -17,19 +17,16 @@ class Car
   attr_reader :beep_count
 
   sig { void }
-
   def initialize
     @beep_count = T.let(0, Integer)
   end
 
   sig { void }
-
   def beep
     @beep_count += 1
   end
 
   sig { params(insurer: Insurer, value: Integer).void }
-
   def report_damage(insurer, value)
     insurer.submit_claim(self, value)
   end
@@ -42,23 +39,21 @@ class Insurer
   attr_reader :total_claim_value
 
   sig { void }
-
   def initialize
     @total_claim_value = T.let(0, Integer)
   end
 
   sig { params(car: Car, value: Integer).void }
-
   def submit_claim(car, value)
     @total_claim_value += value
   end
 end
 
 # Workaround for https://github.com/sorbet/sorbet/issues/8143
-if false
+if false # rubocop:disable Lint/LiteralAsCondition
   T::Sig::WithoutRuntime.sig { params(block: T.proc.bind(T::Private::Methods::DeclBuilder).void).void }
-
-  def sig(&block); end
+  def sig(&block)
+  end
 end
 
 RSpec.describe Car do
@@ -68,7 +63,6 @@ RSpec.describe Car do
   let(:claim_value) { 100 }
 
   sig { returns(Car) }
-
   def create_car
     Car.new
   end
@@ -103,7 +97,6 @@ RSpec.describe Car do
     let(:local_number) { 200 }
 
     sig { returns(Integer) }
-
     def local_number2
       202
     end

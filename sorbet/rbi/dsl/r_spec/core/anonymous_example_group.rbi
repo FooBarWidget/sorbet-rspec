@@ -19,7 +19,13 @@ class RSpec::Core::AnonymousExampleGroup < RSpec::Core::ExampleGroup
     sig { params(name: T.untyped, block: T.proc.bind(RSpec::Core::AnonymousExampleGroup).void).returns(T.untyped) }
     def let(*name, &block); end
 
+    sig { params(name: T.untyped, block: T.proc.bind(RSpec::Core::AnonymousExampleGroup).void).returns(T.untyped) }
+    def let!(*name, &block); end
+
     sig { params(all_args: T.untyped, block: T.proc.bind(RSpec::Core::AnonymousExampleGroup).void).returns(T.untyped) }
     def specify(*all_args, &block); end
+
+    sig { params(block: T.proc.bind(RSpec::Core::AnonymousExampleGroup).void).returns(T.untyped) }
+    def subject(&block); end
   end
 end

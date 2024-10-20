@@ -17,8 +17,8 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
-      - name: Check code formatting with Rufo
-        run: bundle exec rufo --check .
+      - name: Check code formatting with Standard Ruby
+        run: bundle exec standardrb 'lib/**/*.rb' 'spec/**/*.rb'
 
       - name: Test DSL compiler
         run: |

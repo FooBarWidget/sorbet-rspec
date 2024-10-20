@@ -21,8 +21,14 @@ class RSpec::ExampleGroups::Car < RSpec::Core::ExampleGroup
     sig { params(name: T.untyped, block: T.proc.bind(RSpec::ExampleGroups::Car).void).returns(T.untyped) }
     def let(*name, &block); end
 
+    sig { params(name: T.untyped, block: T.proc.bind(RSpec::ExampleGroups::Car).void).returns(T.untyped) }
+    def let!(*name, &block); end
+
     sig { params(all_args: T.untyped, block: T.proc.bind(RSpec::ExampleGroups::Car).void).returns(T.untyped) }
     def specify(*all_args, &block); end
+
+    sig { params(block: T.proc.bind(RSpec::ExampleGroups::Car).void).returns(T.untyped) }
+    def subject(&block); end
   end
 end
 

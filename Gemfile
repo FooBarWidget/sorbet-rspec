@@ -3,5 +3,5 @@ source "https://rubygems.org"
 gemspec
 
 gem "sorbet"
-gem "rufo"
+gem "standard"
 gem "rspec-sorbet"

@@ -9,13 +9,12 @@ module Tapioca
       class RSpec < Compiler
         extend T::Sig
 
-        ConstantType = type_member { { fixed: T.class_of(::RSpec::Core::ExampleGroup) } }
+        ConstantType = type_member { {fixed: T.class_of(::RSpec::Core::ExampleGroup)} }
 
         class << self
           extend T::Sig
 
           sig { override.returns(T::Enumerable[Module]) }
-
           def gather_constants
             all_classes.select { |c| c < ::RSpec::Core::ExampleGroup }
           end
@@ -23,7 +22,6 @@ module Tapioca
           private
 
           sig { void }
-
           def require_spec_files!
             Dir.glob(spec_glob).each do |file|
               require(file)
@@ -31,7 +29,6 @@ module Tapioca
           end
 
           sig { returns(String) }
-
           def spec_glob
             ENV["SORBET_RSPEC_GLOB"] || File.join(".", "spec", "**", "*.rb")
           end
@@ -41,7 +38,6 @@ module Tapioca
         require_spec_files!
 
         sig { override.void }
-
         def decorate
           klass = root.create_class(T.must(constant.name), superclass_name: T.must(constant.superclass).name)
           create_includes(klass)
@@ -52,7 +48,6 @@ module Tapioca
         private
 
         sig { params(klass: RBI::Scope).void }
-
         def create_includes(klass)
           directly_included_modules_for(constant).each do |mod|
             klass.create_include("::#{mod}")
@@ -60,7 +55,6 @@ module Tapioca
         end
 
         sig { params(klass: RBI::Scope).void }
-
         def create_example_group_submodules(klass)
           modules = directly_included_modules_for(constant).select { |mod| mod.name&.start_with?("RSpec::ExampleGroups::") }
           modules.each do |mod|
@@ -72,21 +66,20 @@ module Tapioca
         end
 
         sig { params(klass: RBI::Scope).void }
-
         def create_singleton_methods(klass)
           scope = klass.create_class("<< self")
           scope.create_method(
             "let",
             parameters: [
               create_rest_param("name", type: "T.untyped"),
-              create_block_param("block", type: "T.proc.bind(#{constant.name}).void"),
-            ],
+              create_block_param("block", type: "T.proc.bind(#{constant.name}).void")
+            ]
           )
           scope.create_method(
-            'let!',
+            "let!",
             parameters: [
-              create_rest_param('name', type: 'T.untyped'),
-              create_block_param('block', type: "T.proc.bind(#{constant.name}).void"),
+              create_rest_param("name", type: "T.untyped"),
+              create_block_param("block", type: "T.proc.bind(#{constant.name}).void")
             ]
           )
 
@@ -94,38 +87,38 @@ module Tapioca
             "before",
             parameters: [
               create_rest_param("args", type: "T.untyped"),
-              create_block_param("block", type: "T.proc.bind(#{constant.name}).void"),
-            ],
+              create_block_param("block", type: "T.proc.bind(#{constant.name}).void")
+            ]
           )
 
           scope.create_method(
             "after",
             parameters: [
               create_rest_param("args", type: "T.untyped"),
-              create_block_param("block", type: "T.proc.bind(#{constant.name}).void"),
-            ],
+              create_block_param("block", type: "T.proc.bind(#{constant.name}).void")
+            ]
           )
 
           scope.create_method(
             "it",
             parameters: [
               create_rest_param("all_args", type: "T.untyped"),
-              create_block_param("block", type: "T.proc.bind(#{constant.name}).void"),
-            ],
+              create_block_param("block", type: "T.proc.bind(#{constant.name}).void")
+            ]
           )
 
           scope.create_method(
             "specify",
             parameters: [
               create_rest_param("all_args", type: "T.untyped"),
-              create_block_param("block", type: "T.proc.bind(#{constant.name}).void"),
-            ],
+              create_block_param("block", type: "T.proc.bind(#{constant.name}).void")
+            ]
           )
 
           scope.create_method(
-            'subject',
+            "subject",
             parameters: [
-              create_block_param('block', type: "T.proc.bind(#{constant.name}).void"),
+              create_block_param("block", type: "T.proc.bind(#{constant.name}).void")
             ]
           )
 
@@ -136,7 +129,6 @@ module Tapioca
         end
 
         sig { params(constant: Module).returns(T::Enumerable[Module]) }
-
         def directly_included_modules_for(constant)
           result = constant.included_modules
           result -= constant.included_modules.map do |included_mod|
@@ -149,7 +141,6 @@ module Tapioca
         end
 
         sig { params(constant: Module).returns(T::Enumerable[Symbol]) }
-
         def direct_public_instance_methods_for(constant)
           result = constant.public_instance_methods
           constant.included_modules.each do |included_mod|
