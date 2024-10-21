@@ -82,6 +82,13 @@ module Tapioca
               create_block_param("block", type: "T.proc.bind(#{constant.name}).void"),
             ],
           )
+          scope.create_method(
+            'let!',
+            parameters: [
+              create_rest_param('name', type: 'T.untyped'),
+              create_block_param('block', type: "T.proc.bind(#{constant.name}).void"),
+            ]
+          )
 
           scope.create_method(
             "before",
@@ -113,6 +120,13 @@ module Tapioca
               create_rest_param("all_args", type: "T.untyped"),
               create_block_param("block", type: "T.proc.bind(#{constant.name}).void"),
             ],
+          )
+
+          scope.create_method(
+            'subject',
+            parameters: [
+              create_block_param('block', type: "T.proc.bind(#{constant.name}).void"),
+            ]
           )
 
           singleton_class = constant.singleton_class
