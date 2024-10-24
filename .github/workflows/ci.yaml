@@ -20,14 +20,8 @@ jobs:
       - name: Check code formatting with Standard Ruby
         run: bundle exec standardrb 'lib/**/*.rb' 'spec/**/*.rb'
 
-      - name: Test DSL compiler
-        run: |
-          rm -rf sorbet/rbi/dsl
-          ./bin/tapioca dsl
-          if ! git diff --exit-code; then
-            echo "The DSL RBIs for RSpec tests are out of date. Please re-run './bin/tapioca dsl'"
-            exit 1
-          fi
+      - name: Verify DSL compiler
+        run: bundle exec bin/tapioca dsl --verify
 
       - name: Typecheck with Sorbet
         run: bundle exec srb tc
