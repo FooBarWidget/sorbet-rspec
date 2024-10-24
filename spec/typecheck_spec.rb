@@ -4,9 +4,9 @@
 # This test doesn't actually do anything useful. It only
 # serves to test whether there are typechecking errors.
 
-require "sorbet-runtime"
 require "rspec"
 require "rspec/sorbet"
+require "sorbet-rspec"
 
 RSpec::Sorbet.allow_doubles!
 
@@ -54,12 +54,17 @@ if false # rubocop:disable Lint/LiteralAsCondition
   T::Sig::WithoutRuntime.sig { params(block: T.proc.bind(T::Private::Methods::DeclBuilder).void).void }
   def sig(&block)
   end
+
+  T::Sig::WithoutRuntime.sig { params(block: T.proc.bind(T::Private::Methods::DeclBuilder).void).void }
+  def rsig(&block)
+  end
 end
 
 RSpec.describe Car do
   T.bind(self, T.class_of(RSpec::ExampleGroups::Car))
-  extend T::Sig
+  extend SorbetRspec::Sig
 
+  rsig { returns(Integer) }
   let(:claim_value) { 100 }
 
   sig { returns(Car) }
@@ -94,6 +99,7 @@ RSpec.describe Car do
   context "sub-context" do
     T.bind(self, T.class_of(RSpec::ExampleGroups::Car::SubContext))
 
+    rsig { returns(Integer) }
     let(:local_number) { 200 }
 
     sig { returns(Integer) }
@@ -107,6 +113,7 @@ RSpec.describe Car do
     end
 
     it "can call local lets and methods" do
+      T.assert_type!(local_number, Integer)
       expect(local_number).to eq(200)
       expect(local_number2).to eq(202)
     end

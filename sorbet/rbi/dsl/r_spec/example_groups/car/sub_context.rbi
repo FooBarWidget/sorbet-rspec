@@ -43,6 +43,6 @@ class RSpec::ExampleGroups::Car::SubContext < RSpec::ExampleGroups::Car
 end
 
 module RSpec::ExampleGroups::Car::SubContext::LetDefinitions
-  sig { returns(T.untyped) }
+  sig { returns(::Integer) }
   def local_number; end
 end
