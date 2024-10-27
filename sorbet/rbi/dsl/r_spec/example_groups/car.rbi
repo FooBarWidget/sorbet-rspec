@@ -33,6 +33,6 @@ class RSpec::ExampleGroups::Car < RSpec::Core::ExampleGroup
 end
 
 module RSpec::ExampleGroups::Car::LetDefinitions
-  sig { returns(T.untyped) }
+  sig { returns(::Integer) }
   def claim_value; end
 end

@@ -54,13 +54,30 @@ module Tapioca
           end
         end
 
+        # A method can have a signature even if the method is defined dynamically with define_method
+        # The next call to def or define_method will be the one associated with the signature
+        # However, an exception will be raised if we have two signature declarations in a row
+        # without a method definition.
+        sig { params(method_name: Symbol).returns(String) }
+        def return_type_for_let_declaration(method_name)
+          T::Utils.signature_for_instance_method(constant, method_name)&.return_type&.to_s || "T.untyped"
+        end
+
         sig { params(klass: RBI::Scope).void }
         def create_example_group_submodules(klass)
           modules = directly_included_modules_for(constant).select { |mod| mod.name&.start_with?("RSpec::ExampleGroups::") }
           modules.each do |mod|
             scope = root.create_module(T.must(mod.name))
             direct_public_instance_methods_for(mod).each do |method_name|
-              create_method_from_def(scope, mod.instance_method(method_name))
+              method_def = mod.instance_method(method_name)
+              return_type = return_type_for_let_declaration(method_name)
+
+              scope.create_method(
+                method_def.name.to_s,
+                parameters: compile_method_parameters_to_rbi(method_def),
+                return_type:,
+                class_method: false
+              )
             end
           end
         end
