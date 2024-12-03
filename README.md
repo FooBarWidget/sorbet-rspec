@@ -98,7 +98,8 @@ RSpec.describe "bar" do
 end
 ```
 
-> [!TIP] > **What's the class name to bind to?**
+> [!TIP]
+> **What's the class name to bind to?**
 >
 > RSpec generates a new class for every `describe`/`context` block. It follows the pattern "RSpec::ExampleGroups::[example group slug]". The easiest way to find out the name is to put a `puts self` in the block and check what it prints.
 
