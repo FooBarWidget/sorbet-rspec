@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Gem::Specification.new do |spec|
-  spec.name = "sorbet-rspec"
+  spec.name = "rspec-sorbet-types"
   spec.version = "0.1.0"
   spec.authors = ["Hongli Lai"]
   spec.email = ["hongli@hongli.nl"]

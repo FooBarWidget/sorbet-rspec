@@ -6,7 +6,7 @@
 
 require "rspec"
 require "rspec/sorbet"
-require "sorbet-rspec"
+require "rspec/sorbet/types"
 
 RSpec::Sorbet.allow_doubles!
 
@@ -62,7 +62,7 @@ end
 
 RSpec.describe Car do
   T.bind(self, T.class_of(RSpec::ExampleGroups::Car))
-  extend SorbetRspec::Sig
+  extend RSpec::Sorbet::Types::Sig
 
   rsig { returns(Integer) }
   let(:claim_value) { 100 }

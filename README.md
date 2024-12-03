@@ -4,7 +4,7 @@ This gem adds Sorbet typechecking support for RSpec so that you can use `typed: 
 
 ## Setup
 
-1. Add `sorbet-rspec` to your Gemfile.
+1. Add `rspec-sorbet-types` to your Gemfile.
 
 2. Make sure your `sorbet/tapioca/require.rb` requires RSpec:
 
@@ -217,10 +217,10 @@ However, that's a bit verbose. Perhaps a better workaround is the use of `rsig`,
 ```ruby
 # typed: strict
 require "rspec"
-require "sorbet-rspec"
+require "rspec/sorbet/types"
 
 RSpec.describe "bar" do
-  extend SorbetRspec::Sig # Extending this also extends T::Sig, does not need to be extended again in sub-contexts
+  extend RSpec::Sorbet::Types::Sig # Extending this also extends T::Sig, does not need to be extended again in sub-contexts
 
   rsig { returns(Integer) }
   let(:number) { 100 }

@@ -30,7 +30,7 @@ jobs:
         run: bundle exec rspec
 
       - name: Build gem
-        run: gem build sorbet-rspec.gemspec
+        run: gem build rspec-sorbet-types.gemspec
 
       - name: Upload gem artifact
         uses: actions/upload-artifact@v4
